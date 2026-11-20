@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoShowroom — Giới thiệu các dòng xe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0d12;
+    --card:#141b25;
+    --card-2:#1a2230;
+    --line:rgba(255,255,255,.08);
+    --text:#e8edf5;
+    --muted:#8b98ab;
+    --gold:#e3b873;
+    --gold-2:#c99a4e;
+    --danger:#e5484d;
+    --radius:16px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      radial-gradient(900px 520px at 12% -12%, rgba(227,184,115,.10), transparent 62%),
+      radial-gradient(820px 520px at 92% -6%, rgba(79,140,255,.09), transparent 62%);
+    background-attachment:fixed;
+  }
+
+  ::selection{background:rgba(227,184,115,.3)}
+  .site-footer {
+  margin-top: 40px;
+  padding: 28px 18px;
+  text-align: center;
+  border-top: 1px solid var(--line);
+}
+
+.footer-credit {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.footer-credit span {
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.social-links h3 {
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.social-links a {
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 9px 16px;
+}
+
+  /* ============ NAV ============ */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+    background:rgba(10,13,18,.72);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1240px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;letter-spacing:-.02em}
+  .logo-mark{
+    width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    color:#10151c;font-size:16px;font-weight:900;
+    box-shadow:0 6px 18px -6px rgba(227,184,115,.6);
+  }
+  .logo span{color:var(--gold)}
+
+  /* ============ BUTTONS ============ */
+  .btn{
+    font-family:inherit;font-size:14px;font-weight:600;
+    padding:11px 20px;border-radius:11px;border:1px solid transparent;
+    cursor:pointer;transition:all .25s cubic-bezier(.2,.8,.3,1);
+    display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--gold),var(--gold-2));
+    color:#10151c;
+    box-shadow:0 8px 22px -10px rgba(227,184,115,.75);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(227,184,115,.85)}
+  .btn-primary:active{transform:translateY(0)}
+  .btn-ghost{
+    background:rgba(255,255,255,.04);color:var(--text);border-color:var(--line);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.18)}
+  .btn-danger{background:rgba(229,72,77,.12);color:#ff8a8d;border-color:rgba(229,72,77,.3)}
+  .btn-danger:hover{background:rgba(229,72,77,.22)}
+
+  /* ============ HERO ============ */
+  .hero{max-width:1240px;margin:0 auto;padding:76px 24px 34px;text-align:center}
+  .hero-tag{
+    display:inline-block;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);background:rgba(227,184,115,.1);
+    border:1px solid rgba(227,184,115,.25);
+    padding:7px 16px;border-radius:99px;margin-bottom:22px;
+    animation:rise .7s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .hero h1{
+    font-size:clamp(30px,5.2vw,52px);font-weight:800;letter-spacing:-.03em;line-height:1.12;
+    animation:rise .7s .08s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .hero h1 em{
+    font-style:normal;
+    background:linear-gradient(100deg,var(--gold),#f7e0b6 60%,var(--gold));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p{
+    color:var(--muted);font-size:16px;line-height:1.7;max-width:620px;margin:18px auto 0;
+    animation:rise .7s .16s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .hero-stats{
+    display:flex;justify-content:center;gap:44px;flex-wrap:wrap;margin-top:38px;
+    animation:rise .7s .24s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .stat b{display:block;font-size:26px;font-weight:800;color:var(--gold);letter-spacing:-.02em}
+  .stat small{color:var(--muted);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase}
+
+  /* ============ MAIN ============ */
+  main{max-width:1240px;margin:0 auto;padding:20px 24px 90px}
+
+  .toolbar{
+    display:flex;gap:14px;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;margin-bottom:28px;
+  }
+  .search-wrap{position:relative;flex:1;min-width:240px;max-width:420px}
+  .search-wrap svg{
+    position:absolute;left:15px;top:50%;transform:translateY(-50%);
+    width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:2;pointer-events:none;
+  }
+  .search-wrap input{
+    width:100%;padding:13px 16px 13px 44px;border-radius:12px;
+    background:var(--card);border:1px solid var(--line);color:var(--text);
+    font-family:inherit;font-size:14px;outline:none;transition:all .25s;
+  }
+  .search-wrap input::placeholder{color:#5f6b7d}
+  .search-wrap input:focus{border-color:rgba(227,184,115,.5);box-shadow:0 0 0 4px rgba(227,184,115,.09)}
+
+  select{
+    padding:13px 16px;border-radius:12px;background:var(--card);
+    border:1px solid var(--line);color:var(--text);font-family:inherit;font-size:14px;
+    outline:none;cursor:pointer;transition:all .25s;
+  }
+  select:focus{border-color:rgba(227,184,115,.5)}
+
+  /* ============ GRID / CARD ============ */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;cursor:pointer;
+    transition:transform .4s cubic-bezier(.2,.8,.3,1),border-color .3s,box-shadow .4s;
+    animation:rise .6s cubic-bezier(.2,.8,.3,1) backwards;
+  }
+  .card:hover{
+    transform:translateY(-7px);
+    border-color:rgba(227,184,115,.35);
+    box-shadow:0 22px 44px -22px rgba(0,0,0,.9);
+  }
+  .card-media{position:relative;aspect-ratio:16/10;overflow:hidden;background:#0d1219}
+  .card-media img{
+    width:100%;height:100%;object-fit:cover;display:block;
+    transition:transform .7s cubic-bezier(.2,.8,.3,1);
+  }
+  .card:hover .card-media img{transform:scale(1.07)}
+  .card-media::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(to top,rgba(10,13,18,.85) 0%,transparent 55%);
+  }
+  .badge{
+    position:absolute;top:12px;left:12px;z-index:2;
+    font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    padding:6px 12px;border-radius:8px;
+    background:rgba(10,13,18,.72);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.14);color:var(--gold);
+  }
+  .card-price{
+    position:absolute;bottom:12px;right:14px;z-index:2;
+    font-size:17px;font-weight:800;color:#fff;letter-spacing:-.01em;
+    text-shadow:0 2px 12px rgba(0,0,0,.8);
+  }
+  .card-body{padding:18px 20px 20px}
+  .card-body h3 {
+  font-size:17px;
+  font-weight:700;
+  letter-spacing:-.01em;
+  line-height:1.35;
+  margin-bottom:12px;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:1;
+  line-clamp:1;
+  overflow:hidden;
+}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .chips span{
+    font-size:12px;color:var(--muted);font-weight:500;
+    background:rgba(255,255,255,.045);border:1px solid var(--line);
+    padding:5px 10px;border-radius:7px;
+  }
+  .card-btn{
+    width:100%;justify-content:center;padding:10px;font-size:13.5px;
+    background:transparent;border-color:var(--line);
+  }
+  .card:hover .card-btn{
+    background:rgba(227,184,115,.1);border-color:rgba(227,184,115,.35);color:var(--gold);
+  }
+
+  /* ============ EMPTY ============ */
+  .empty{
+    text-align:center;padding:80px 24px;color:var(--muted);
+    border:1.5px dashed var(--line);border-radius:20px;
+  }
+  .empty h3{color:var(--text);font-size:18px;margin-bottom:8px}
+  .empty p{font-size:14px;line-height:1.7}
+
+  /* ============ MODAL ============ */
+  .modal{
+    position:fixed;inset:0;z-index:100;
+    display:flex;align-items:center;justify-content:center;padding:20px;
+    opacity:0;visibility:hidden;
+    transition:opacity .3s ease,visibility .3s ease;
+  }
+  .modal.open{opacity:1;visibility:visible}
+  .modal-backdrop{
+    position:absolute;inset:0;background:rgba(4,7,11,.78);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  }
+  .modal-card{
+    position:relative;z-index:1;width:100%;max-width:880px;max-height:90vh;
+    overflow-y:auto;background:var(--card);
+    border:1px solid rgba(255,255,255,.1);border-radius:22px;
+    transform:translateY(24px) scale(.97);
+    transition:transform .4s cubic-bezier(.2,.8,.3,1);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.95);
+  }
+  .modal.open .modal-card{transform:none}
+  .modal-card::-webkit-scrollbar{width:8px}
+  .modal-card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:8px}
+
+  .modal-close{
+    position:absolute;top:14px;right:14px;z-index:5;
+    width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.16);
+    background:rgba(10,13,18,.75);backdrop-filter:blur(8px);
+    color:#fff;font-size:20px;line-height:1;cursor:pointer;
+    display:grid;place-items:center;transition:all .25s;
+  }
+  .modal-close:hover{background:rgba(229,72,77,.85);transform:rotate(90deg)}
+
+  /* ---- Detail ---- */
+  .detail-media{position:relative;aspect-ratio:16/9;background:#0d1219;overflow:hidden}
+  .detail-media img{width:100%;height:100%;object-fit:cover;display:block}
+  .detail-content{padding:28px 30px 30px}
+  .detail-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    gap:20px;flex-wrap:wrap;margin-bottom:24px;
+  }
+  .detail-brand{
+    font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);display:block;margin-bottom:8px;
+  }
+  .detail-head h2{font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.25}
+  .detail-price{
+    font-size:24px;font-weight:800;color:var(--gold);
+    letter-spacing:-.02em;white-space:nowrap;
+  }
+  .spec-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:12px;margin-bottom:26px;
+  }
+  .spec{
+    background:var(--card-2);border:1px solid var(--line);
+    border-radius:12px;padding:14px 16px;
+    transition:border-color .25s,transform .25s;
+  }
+  .spec:hover{border-color:rgba(227,184,115,.3);transform:translateY(-2px)}
+  .spec small{
+    display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:6px;font-weight:600;
+  }
+  .spec b{font-size:15px;font-weight:600;color:var(--text)}
+  .detail-desc h4{
+    font-size:13px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:12px;font-weight:700;
+  }
+  .detail-desc p{font-size:14.5px;line-height:1.85;color:#b9c4d4}
+  .detail-actions{
+    display:flex;gap:12px;justify-content:flex-end;
+    margin-top:28px;padding-top:22px;border-top:1px solid var(--line);
+  }
+
+  /* ---- Form ---- */
+  .modal-form{max-width:720px}
+  .form-head{padding:26px 30px 0}
+  .form-head h2{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .form-head p{color:var(--muted);font-size:13.5px;margin-top:6px}
+  form{padding:24px 30px 30px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .field{display:flex;flex-direction:column;gap:8px}
+  .field.full{grid-column:1/-1}
+  .field label{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.03em}
+  .field label i{color:var(--gold);font-style:normal}
+  .field input,.field textarea,.field select{
+    width:100%;padding:12px 14px;border-radius:11px;
+    background:var(--card-2);border:1px solid var(--line);
+    color:var(--text);font-family:inherit;font-size:14px;outline:none;
+    transition:all .25s;resize:vertical;
+  }
+  .field input::placeholder,.field textarea::placeholder{color:#5a6678}
+  .field input:focus,.field textarea:focus,.field select:focus{
+    border-color:rgba(227,184,115,.5);box-shadow:0 0 0 4px rgba(227,184,115,.08);
+  }
+
+  .dropzone{
+    position:relative;border:1.5px dashed rgba(255,255,255,.16);
+    border-radius:14px;overflow:hidden;cursor:pointer;
+    transition:all .25s;background:var(--card-2);
+    min-height:150px;display:grid;place-items:center;
+  }
+  .dropzone:hover,.dropzone.drag{
+    border-color:rgba(227,184,115,.55);background:rgba(227,184,115,.05);
+  }
+  .dropzone-inner{
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    padding:26px;color:var(--muted);font-size:13.5px;text-align:center;
+  }
+  .dropzone-inner svg{width:34px;height:34px;stroke:var(--gold);fill:none;stroke-width:1.6}
+  .dropzone img{width:100%;max-height:240px;object-fit:cover;display:block}
+
+  .form-actions{
+    display:flex;gap:12px;justify-content:flex-end;
+    margin-top:26px;padding-top:22px;border-top:1px solid var(--line);
+  }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes rise{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width:720px){
+    .nav-inner{padding:12px 18px}
+    .logo{font-size:16px}
+    .btn{padding:10px 16px;font-size:13px}
+    .hero{padding:52px 18px 26px}
+    .hero-stats{gap:28px}
+    main{padding:16px 18px 70px}
+    .grid{grid-template-columns:1fr;gap:18px}
+    .form-grid{grid-template-columns:1fr}
+    .detail-content{padding:22px 20px 24px}
+    .detail-head h2{font-size:21px}
+    .detail-price{font-size:20px}
+    form{padding:20px}
+    .form-head{padding:22px 20px 0}
+    .detail-actions{flex-direction:column-reverse}
+    .detail-actions .btn{width:100%;justify-content:center}
+  }
+  .footer-credit {
+  padding: 22px 18px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  border-top: 1px solid var(--line);
+}
+
+.footer-credit span {
+  color: var(--gold);
+  font-weight: 600;
+}
+</style>
+</head>
+<body>
+
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-mark">A</div>
+      Auto<span>Showroom</span>
+    </div>
+    <button class="btn btn-primary" id="btnAdd">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+      Thêm xe
+    </button>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="hero-tag">Bộ sưu tập xe</div>
+  <h1>Khám phá những <em>dòng xe</em><br>đẳng cấp &amp; mạnh mẽ</h1>
+  <p>Xem thông tin chi tiết về động cơ, công suất, hộp số và giá bán của từng mẫu xe. Nhấn vào xe để xem phần giới thiệu đầy đủ.</p>
+  <div class="hero-stats">
+    <div class="stat"><b id="statCount">0</b><small>Mẫu xe</small></div>
+    <div class="stat"><b id="statBrand">0</b><small>Thương hiệu</small></div>
+    <div class="stat"><b>100%</b><small>Chính hãng</small></div>
+  </div>
+</section>
+
+<!-- ================= MAIN ================= -->
+<main>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5" stroke-linecap="round"/></svg>
+      <input type="text" id="search" placeholder="Tìm theo tên xe hoặc hãng...">
+    </div>
+    <select id="sort">
+      <option value="new">Mới thêm gần đây</option>
+      <option value="price-asc">Giá: Thấp → Cao</option>
+      <option value="price-desc">Giá: Cao → Thấp</option>
+      <option value="year-desc">Năm sản xuất mới nhất</option>
+    </select>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div class="empty" id="empty" style="display:none">
+    <h3>Chưa có xe nào</h3>
+    <p>Nhấn vào nút <b style="color:var(--gold)">“Thêm xe”</b> ở góc trên để đăng mẫu xe đầu tiên của bạn.</p>
+  </div>
+</main>
+
+<!-- ================= MODAL CHI TIẾT ================= -->
+<div class="modal" id="detailModal" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close aria-label="Đóng">&times;</button>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ================= MODAL THÊM XE ================= -->
+<div class="modal" id="uploadModal" aria-hidden="true">
+  <div class="modal-backdrop" data-close></div>
+  <div class="modal-card modal-form">
+    <button class="modal-close" data-close aria-label="Đóng">&times;</button>
+    <div class="form-head">
+      <h2>Thêm xe mới</h2>
+      <p>Điền thông tin bên dưới. Các trường có dấu <i style="color:var(--gold);font-style:normal">*</i> là bắt buộc.</p>
+    </div>
+
+    <form id="carForm" novalidate>
+      <div class="form-grid">
+
+        <div class="field full">
+          <label>Ảnh xe</label>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="imgInput" accept="image/*" hidden>
+            <div class="dropzone-inner" id="dropInner">
+              <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>
+              </svg>
+              <span>Nhấn hoặc kéo ảnh vào đây</span>
+              <span style="font-size:12px;opacity:.6">JPG, PNG, WEBP — tự động nén</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tên xe <i>*</i></label>
+          <input type="text" name="name" placeholder="VD: Toyota Camry 2.5Q" required>
+        </div>
+
+        <div class="field">
+          <label>Hãng xe</label>
+          <input type="text" name="brand" placeholder="VD: Toyota">
+        </div>
+
+        <div class="field">
+          <label>Giá bán (VNĐ) <i>*</i></label>
+          <input type="number" name="price" placeholder="VD: 1235000000" min="0" required>
+        </div>
+
+        <div class="field">
+          <label>Năm sản xuất</label>
+          <input type="number" name="year" placeholder="VD: 2024" min="1900" max="2100">
+        </div>
+
+        <div class="field">
+          <label>Động cơ</label>
+          <input type="text" name="engine" placeholder="VD: 2.5L I4 Turbo">
+        </div>
+
+        <div class="field">
+          <label>Công suất</label>
+          <input type="text" name="power" placeholder="VD: 207 mã lực">
+        </div>
+
+        <div class="field">
+          <label>Mô-men xoắn</label>
+          <input type="text" name="torque" placeholder="VD: 250 Nm">
+        </div>
+
+        <div class="field">
+          <label>Hộp số</label>
+          <input type="text" name="transmission" placeholder="VD: Số tự động 8 cấp">
+        </div>
+
+        <div class="field">
+          <label>Nhiên liệu</label>
+          <select name="fuel">
+            <option value="">-- Chọn --</option>
+            <option>Xăng</option>
+            <option>Dầu Diesel</option>
+            <option>Điện</option>
+            <option>Hybrid</option>
+            <option>Plug-in Hybrid</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Số chỗ ngồi</label>
+          <input type="text" name="seats" placeholder="VD: 5 chỗ">
+        </div>
+
+        <div class="field full">
+          <label>Nội dung giới thiệu xe</label>
+          <textarea name="description" rows="4" placeholder="Mô tả thiết kế, trang bị, cảm giác lái, tiện nghi..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="btn btn-ghost" data-close>Hủy</button>
+        <button type="submit" class="btn btn-primary">Lưu xe</button>
+      </div>
+    </form>
+  </div>
+</div>
+</main>
+
+<footer class="site-footer">
+  <p class="footer-credit">Made by <span>Kei23</span></p>
+
+  <div class="social-links">
+    <h3>Kết nối với tôi</h3>
+    <a href="https://github.com/gh23-kei"
+       target="_blank"
+       rel="noopener noreferrer">
+      GitHub
+    </a>
+  </div>
+</footer>
+
+
+<script>
+/* =========================================================
+   AUTO SHOWROOM — Logic
+   ========================================================= */
+
+const STORE_KEY = 'autoshowroom_cars_v1';
+
+const grid        = document.getElementById('grid');
+const empty       = document.getElementById('empty');
+const searchInput = document.getElementById('search');
+const sortSelect  = document.getElementById('sort');
+const detailModal = document.getElementById('detailModal');
+const uploadModal = document.getElementById('uploadModal');
+const detailBody  = document.getElementById('detailBody');
+const carForm     = document.getElementById('carForm');
+const dropzone    = document.getElementById('dropzone');
+const imgInput    = document.getElementById('imgInput');
+const dropInner   = document.getElementById('dropInner');
+
+let cars = [];
+let pendingImage = null;   // base64 ảnh đang chờ lưu
+let editingCarId = null;
+
+/* ---------- Tiện ích ---------- */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+function formatPrice(n){
+  if(!n && n !== 0) return 'Liên hệ';
+  return new Intl.NumberFormat('vi-VN').format(n) + ' ₫';
+}
+
+function shortPrice(n){
+  if(!n) return 'Liên hệ';
+  if(n >= 1e9){
+    const v = n / 1e9;
+    return (Number.isInteger(v) ? v : v.toFixed(1)).toString().replace('.', ',') + ' tỷ';
+  }
+  if(n >= 1e6) return Math.round(n / 1e6) + ' triệu';
+  return new Intl.NumberFormat('vi-VN').format(n) + ' ₫';
+}
+
+/* Ảnh placeholder SVG khi chưa có ảnh */
+function placeholder(text){
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#1b2431"/><stop offset="1" stop-color="#0c1118"/>
+      </linearGradient>
+    </defs>
+    <rect width="800" height="500" fill="url(#g)"/>
+    <g fill="none" stroke="#e3b873" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.85">
+      <path d="M170 300 v-42 q0-20 20-26 l92-25 62-57 q10-10 26-10 h120 q16 0 26 10 l62 57 92 25 q20 6 20 26 v42"/>
+      <path d="M150 300 h500"/>
+      <circle cx="258" cy="300" r="42"/>
+      <circle cx="542" cy="300" r="42"/>
+    </g>
+    <text x="400" y="430" fill="#7b8798" font-family="Inter,Arial,sans-serif" font-size="24"
+          text-anchor="middle" letter-spacing="2">${esc(text).toUpperCase()}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+}
+
+/* ---------- Lưu / tải dữ liệu ---------- */
+function loadCars(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    cars = raw ? JSON.parse(raw) : seedCars();
+  }catch(e){
+    cars = seedCars();
+  }
+  if(!Array.isArray(cars)) cars = [];
+}
+
+function saveCars(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(cars));
+    return true;
+  }catch(e){
+    alert('Bộ nhớ trình duyệt đã đầy! Hãy xóa bớt xe hoặc dùng ảnh nhỏ hơn.');
+    return false;
+  }
+}
+
+/* Dữ liệu mẫu cho lần đầu mở trang */
+function seedCars(){
+  const now = Date.now();
+  return [
+    {
+      id: uid(), createdAt: now,
+      name: 'Toyota Camry 2.5Q', brand: 'Toyota',
+      price: 1235000000, year: 2024,
+      engine: '2.5L I4', power: '207 mã lực', torque: '250 Nm',
+      transmission: 'Số tự động 8 cấp', fuel: 'Xăng', seats: '5 chỗ',
+      image: placeholder('Toyota Camry'),
+      description: 'Camry thế hệ mới mang thiết kế trẻ trung, lịch lãm với lưới tản nhiệt cỡ lớn và đèn LED sắc nét. Khoang nội thất rộng rãi, vật liệu cao cấp, trang bị gói an toàn Toyota Safety Sense cùng hệ thống giải trí 9 inch. Đây là mẫu sedan hạng D cân bằng giữa sự êm ái, tiết kiệm nhiên liệu và độ bền.'
+    },
+    {
+      id: uid(), createdAt: now - 1000,
+      name: 'Mercedes-Benz C300 AMG', brand: 'Mercedes-Benz',
+      price: 2199000000, year: 2024,
+      engine: '2.0L Turbo + EQ Boost', power: '258 mã lực', torque: '400 Nm',
+      transmission: 'Số tự động 9G-TRONIC', fuel: 'Xăng', seats: '5 chỗ',
+      image: placeholder('Mercedes C300'),
+      description: 'C300 AMG Line sở hữu ngôn ngữ thiết kế Sensual Purity với ngoại thất thể thao, mâm AMG 19 inch và gói nội thất bọc da cao cấp. Hệ thống MBUX thế hệ mới với màn hình dọc 11.9 inch, đèn viền nội thất 64 màu và dàn âm thanh Burmester. Động cơ 2.0L tăng áp kết hợp EQ Boost cho khả năng tăng tốc mượt mà.'
+    },
+    {
+      id: uid(), createdAt: now - 2000,
+      name: 'VinFast VF 8 Plus', brand: 'VinFast',
+      price: 1099000000, year: 2024,
+      engine: '2 mô-tơ điện', power: '402 mã lực', torque: '620 Nm',
+      transmission: 'Số tự động 1 cấp', fuel: 'Điện', seats: '5 chỗ',
+      image: placeholder('VinFast VF 8'),
+      description: 'VF 8 Plus là mẫu SUV điện cỡ D với phạm vi di chuyển lên tới 471 km mỗi lần sạc đầy. Xe trang bị hệ thống hỗ trợ lái nâng cao ADAS, màn hình trung tâm 15.6 inch, trợ lý ảo tiếng Việt và khả năng cập nhật phần mềm từ xa OTA. Thiết kế khí động học với hệ số cản gió chỉ 0.28 Cd.'
+    }
+  ];
+}
+
+/* ---------- Nén ảnh trước khi lưu ---------- */
+function compressImage(file, maxW = 1200, quality = 0.82){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if(w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => reject(new Error('Không đọc được ảnh'));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error('Không đọc được file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/* ---------- Render ---------- */
+function render(){
+  const q = searchInput.value.trim().toLowerCase();
+  const sort = sortSelect.value;
+
+  let list = cars.filter(c => {
+    if(!q) return true;
+    return ((c.name || '') + ' ' + (c.brand || '')).toLowerCase().includes(q);
+  });
+
+  if(sort === 'price-asc')       list.sort((a,b) => (a.price || 0) - (b.price || 0));
+  else if(sort === 'price-desc') list.sort((a,b) => (b.price || 0) - (a.price || 0));
+  else if(sort === 'year-desc')  list.sort((a,b) => (b.year || 0) - (a.year || 0));
+  else                           list.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+  grid.innerHTML = '';
+
+  if(list.length === 0){
+    empty.style.display = 'block';
+    grid.style.display = 'none';
+  }else{
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+
+    list.forEach((c, i) => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.style.animationDelay = (i * 60) + 'ms';
+      card.dataset.id = c.id;
+
+      const chips = [
+        c.engine ? `⚙️ ${esc(c.engine)}` : '',
+        c.power  ? `⚡ ${esc(c.power)}`  : '',
+        c.year   ? `📅 ${esc(c.year)}`   : ''
+      ].filter(Boolean).map(t => `<span>${t}</span>`).join('');
+
+      card.innerHTML = `
+        <div class="card-media">
+          <span class="badge">${esc(c.brand || 'Xe')}</span>
+          <img src="${c.image || placeholder(c.name)}" alt="${esc(c.name)}" loading="lazy">
+          <span class="card-price">${shortPrice(c.price)}</span>
+        </div>
+        <div class="card-body">
+          <h3>${esc(c.name)}</h3>
+          <div class="chips">${chips}</div>
+          <button class="btn btn-ghost card-btn">Xem chi tiết →</button>
+        </div>
+      `;
+
+      card.addEventListener('click', () => openDetail(c.id));
+      grid.appendChild(card);
+    });
+  }
+
+  // Cập nhật số liệu hero
+  document.getElementById('statCount').textContent = cars.length;
+  const brands = new Set(cars.map(c => (c.brand || '').trim().toLowerCase()).filter(Boolean));
+  document.getElementById('statBrand').textContent = brands.size;
+}
+
+/* ---------- Modal helpers ---------- */
+function openModal(el){
+  el.classList.add('open');
+  el.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(el){
+  el.classList.remove('open');
+  el.setAttribute('aria-hidden', 'true');
+  if(!document.querySelector('.modal.open')) document.body.style.overflow = '';
+}
+
+function closeAllModals(){
+  document.querySelectorAll('.modal.open').forEach(closeModal);
+}
+
+/* ---------- Chi tiết xe ---------- */
+function specItem(label, value){
+  if(!value && value !== 0) return '';
+  return `<div class="spec"><small>${esc(label)}</small><b>${esc(value)}</b></div>`;
+}
+
+function openDetail(id){
+  const c = cars.find(x => x.id === id);
+  if(!c) return;
+
+  detailBody.innerHTML = `
+    <div class="detail-media">
+      <img src="${c.image || placeholder(c.name)}" alt="${esc(c.name)}">
+    </div>
+    <div class="detail-content">
+      <div class="detail-head">
+        <div>
+          <span class="detail-brand">${esc(c.brand || 'Xe')}</span>
+          <h2>${esc(c.name)}</h2>
+        </div>
+        <div class="detail-price">${formatPrice(c.price)}</div>
+      </div>
+
+      <div class="spec-grid">
+        ${specItem('Động cơ', c.engine)}
+        ${specItem('Công suất', c.power)}
+        ${specItem('Mô-men xoắn', c.torque)}
+        ${specItem('Hộp số', c.transmission)}
+        ${specItem('Nhiên liệu', c.fuel)}
+        ${specItem('Năm sản xuất', c.year)}
+        ${specItem('Số chỗ', c.seats)}
+      </div>
+
+      ${c.description ? `
+        <div class="detail-desc">
+          <h4>Giới thiệu xe</h4>
+          <p>${esc(c.description).replace(/\n/g, '<br>')}</p>
+        </div>` : ''}
+
+      <div class="detail-actions">
+        <button class="btn btn-danger" data-delete="${c.id}">Xóa xe</button>
+        <button class="btn btn-primary" data-edit="${esc(c.id)}">Chỉnh sửa</button>
+        <button class="btn btn-ghost" data-close>Đóng</button>
+      </div>
+    </div>
+  `;
+
+  openModal(detailModal);
+}
+function startEditCar(id){
+  const c = cars.find(x => x.id === id);
+  if(!c) return;
+
+  const password = prompt('Nhập mật khẩu để chỉnh sửa xe:');
+  if(password !== '232012'){
+    if(password !== null) alert('Mật khẩu không đúng.');
+    return;
+  }
+
+  resetForm();
+  editingCarId = id;
+
+  carForm.elements.namedItem('name').value = c.name || '';
+  carForm.elements.namedItem('brand').value = c.brand || '';
+  carForm.elements.namedItem('price').value = c.price ?? '';
+  carForm.elements.namedItem('year').value = c.year || '';
+  carForm.elements.namedItem('engine').value = c.engine || '';
+  carForm.elements.namedItem('power').value = c.power || '';
+  carForm.elements.namedItem('torque').value = c.torque || '';
+  carForm.elements.namedItem('transmission').value = c.transmission || '';
+  carForm.elements.namedItem('fuel').value = c.fuel || '';
+  carForm.elements.namedItem('seats').value = c.seats || '';
+  carForm.elements.namedItem('description').value = c.description || '';
+
+  if(c.image){
+    dropInner.innerHTML = `<img src="${esc(c.image)}" alt="Ảnh xe hiện tại">`;
+  }
+
+  document.querySelector('.form-head h2').textContent = 'Chỉnh sửa thông tin xe';
+
+  closeAllModals();
+  openModal(uploadModal);
+}
+
+/* ---------- Xóa xe ---------- */
+function deleteCar(id){
+  const c = cars.find(x => x.id === id);
+  if(!c) return;
+  if(!confirm(`Bạn có chắc muốn xóa "${c.name}"?`)) return;
+
+  cars = cars.filter(x => x.id !== id);
+  saveCars();
+  closeAllModals();
+  render();
+}
+
+/* ---------- Form thêm xe ---------- */
+function resetForm(){
+  carForm.reset();
+  pendingImage = null;
+  dropInner.innerHTML = `
+    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <path d="M17 8l-5-5-5 5"/><path d="M12 3v12"/>
+    </svg>
+    <span>Nhấn hoặc kéo ảnh vào đây</span>
+    <span style="font-size:12px;opacity:.6">JPG, PNG, WEBP — tự động nén</span>
+  `;
+}
+
+async function handleFile(file){
+  if(!file || !file.type.startsWith('image/')) return;
+  try{
+    const data = await compressImage(file);
+    pendingImage = data;
+    dropInner.innerHTML = `<img src="${data}" alt="Xem trước">`;
+  }catch(err){
+    alert('Không thể đọc ảnh này. Vui lòng chọn ảnh khác.');
+  }
+}
+
+/* ---------- Sự kiện ---------- */
+document.getElementById('btnAdd').addEventListener('click', () => {
+  editingCarId = null;
+  resetForm();
+  document.querySelector('.form-head h2').textContent = 'Thêm xe mới';
+  openModal(uploadModal);
+});
+
+// Đóng modal
+document.addEventListener('click', e => {
+  if(e.target.closest('[data-close]')){
+    closeAllModals();
+    return;
+  }
+    const editBtn = e.target.closest('[data-edit]');
+  if(editBtn){
+    startEditCar(editBtn.dataset.edit);
+    return;
+  }
+  const delBtn = e.target.closest('[data-delete]');
+  if(delBtn) deleteCar(delBtn.dataset.delete);
+});
+
+// ESC để đóng
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape') closeAllModals();
+});
+
+// Tìm kiếm & sắp xếp
+searchInput.addEventListener('input', render);
+sortSelect.addEventListener('change', render);
+
+// Chọn ảnh
+dropzone.addEventListener('click', () => imgInput.click());
+imgInput.addEventListener('change', e => handleFile(e.target.files[0]));
+
+// Kéo thả ảnh
+['dragenter','dragover'].forEach(ev =>
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.add('drag'); })
+);
+['dragleave','drop'].forEach(ev =>
+  dropzone.addEventListener(ev, e => { e.preventDefault(); dropzone.classList.remove('drag'); })
+);
+dropzone.addEventListener('drop', e => {
+  const file = e.dataTransfer.files && e.dataTransfer.files[0];
+  if(file) handleFile(file);
+});
+
+// Submit form
+carForm.addEventListener('submit', e => {
+  e.preventDefault();
+
+  const fd = new FormData(carForm);
+  const name = (fd.get('name') || '').toString().trim();
+  const priceRaw = (fd.get('price') || '').toString().trim();
+
+  if(!name){
+    alert('Vui lòng nhập tên xe.');
+    carForm.querySelector('[name="name"]').focus();
+    return;
+  }
+  if(!priceRaw || !Number.isFinite(Number(priceRaw)) || Number(priceRaw) < 0){
+    alert('Vui lòng nhập giá bán hợp lệ.');
+    carForm.querySelector('[name="price"]').focus();
+    return;
+  }
+
+    const existingIndex = editingCarId
+    ? cars.findIndex(c => c.id === editingCarId)
+    : -1;
+
+  const oldCar = existingIndex >= 0 ? cars[existingIndex] : null;
+
+  const car = {
+    id: oldCar ? oldCar.id : uid(),
+    createdAt: oldCar ? oldCar.createdAt : Date.now(),
+    name,
+    brand: (fd.get('brand') || '').toString().trim(),
+    price: Number(priceRaw),
+    year: Number(fd.get('year')) || null,
+    engine: (fd.get('engine') || '').toString().trim(),
+    power: (fd.get('power') || '').toString().trim(),
+    torque: (fd.get('torque') || '').toString().trim(),
+    transmission: (fd.get('transmission') || '').toString().trim(),
+    fuel: (fd.get('fuel') || '').toString().trim(),
+    seats: (fd.get('seats') || '').toString().trim(),
+    description: (fd.get('description') || '').toString().trim(),
+    image: pendingImage || (oldCar && oldCar.image) || placeholder(name)
+  };
+
+  if(existingIndex >= 0){
+    cars[existingIndex] = car;
+  }else{
+    cars.unshift(car);
+  }
+
+  if(!saveCars()){
+    if(existingIndex >= 0){
+      cars[existingIndex] = oldCar;
+    }else{
+      cars.shift();
+    }
+    return;
+  }
+
+  editingCarId = null;
+  closeAllModals();
+  resetForm();
+  document.querySelector('.form-head h2').textContent = 'Thêm xe mới';
+  render();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ---------- Khởi tạo ---------- */
+loadCars();
+render();
+
+/* Nếu localStorage trống lần đầu → lưu dữ liệu mẫu */
+if(!localStorage.getItem(STORE_KEY)){
+  saveCars();
+}
+
+</script>
+</body>
+</html>
+ 
