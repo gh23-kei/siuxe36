@@ -395,6 +395,41 @@
   font-weight: 600;
 }
 </style>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+  import {
+    getFirestore, collection, addDoc, updateDoc, deleteDoc,
+    doc, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAc8FR925yj6hU3_QzeDGb0t0E4NKfXRqQ",
+    authDomain: "siuxe-5ed33.firebaseapp.com",
+    projectId: "siuxe-5ed33",
+    storageBucket: "siuxe-5ed33.firebasestorage.app",
+    messagingSenderId: "81287445699",
+    appId: "1:81287445699:web:320495f8ed6f18c98e3676"
+  };
+
+  window.firebaseApp = initializeApp(firebaseConfig);
+  window.firestoreDb = getFirestore(window.firebaseApp);
+  window.firebaseAuth = getAuth(window.firebaseApp);
+
+  window.fbCars = {
+    collection,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  };
+</script>
 </head>
 <body>
 
@@ -405,6 +440,8 @@
       <div class="logo-mark">A</div>
       Auto<span>Showroom</span>
     </div>
+    <button class="btn btn-ghost" id="btnLogin">Đăng nhập</button>
+<button class="btn btn-ghost" id="btnLogout" style="display:none">Đăng xuất</button>
     <button class="btn btn-primary" id="btnAdd">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
       Thêm xe
@@ -576,8 +613,6 @@
    AUTO SHOWROOM — Logic
    ========================================================= */
 
-const STORE_KEY = 'autoshowroom_cars_v1';
-
 const grid        = document.getElementById('grid');
 const empty       = document.getElementById('empty');
 const searchInput = document.getElementById('search');
@@ -638,23 +673,22 @@ function placeholder(text){
 
 /* ---------- Lưu / tải dữ liệu ---------- */
 function loadCars(){
-  try{
-    const raw = localStorage.getItem(STORE_KEY);
-    cars = raw ? JSON.parse(raw) : seedCars();
-  }catch(e){
-    cars = seedCars();
-  }
-  if(!Array.isArray(cars)) cars = [];
-}
+  const { collection, onSnapshot } = window.fbCars;
 
-function saveCars(){
-  try{
-    localStorage.setItem(STORE_KEY, JSON.stringify(cars));
-    return true;
-  }catch(e){
-    alert('Bộ nhớ trình duyệt đã đầy! Hãy xóa bớt xe hoặc dùng ảnh nhỏ hơn.');
-    return false;
-  }
+  onSnapshot(
+    collection(window.firestoreDb, 'cars'),
+    snapshot => {
+      cars = snapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data()
+      }));
+      render();
+    },
+    error => {
+      console.error('Lỗi tải xe từ Firestore:', error);
+      alert('Không tải được dữ liệu xe. Kiểm tra Firestore Rules và cấu hình Firebase.');
+    }
+  );
 }
 
 /* Dữ liệu mẫu cho lần đầu mở trang */
@@ -844,11 +878,10 @@ function startEditCar(id){
   const c = cars.find(x => x.id === id);
   if(!c) return;
 
-  const password = prompt('Nhập mật khẩu để chỉnh sửa xe:');
-  if(password !== '232012'){
-    if(password !== null) alert('Mật khẩu không đúng.');
-    return;
-  }
+  if(!window.firebaseAuth.currentUser){
+  alert('Bạn cần đăng nhập để sửa xe.');
+  return;
+}
 
   resetForm();
   editingCarId = id;
@@ -876,15 +909,27 @@ function startEditCar(id){
 }
 
 /* ---------- Xóa xe ---------- */
-function deleteCar(id){
+/* ---------- Xóa xe ---------- */
+async function deleteCar(id){
   const c = cars.find(x => x.id === id);
   if(!c) return;
+
+  if(!window.firebaseAuth.currentUser){
+    alert('Bạn cần đăng nhập để xóa xe.');
+    return;
+  }
+
   if(!confirm(`Bạn có chắc muốn xóa "${c.name}"?`)) return;
 
-  cars = cars.filter(x => x.id !== id);
-  saveCars();
-  closeAllModals();
-  render();
+  try{
+    await window.fbCars.deleteDoc(
+      window.fbCars.doc(window.firestoreDb, 'cars', id)
+    );
+    closeAllModals();
+  }catch(error){
+    console.error(error);
+    alert('Không thể xóa xe: ' + error.message);
+  }
 }
 
 /* ---------- Form thêm xe ---------- */
@@ -912,6 +957,45 @@ async function handleFile(file){
   }
 }
 
+document.getElementById('btnLogin').addEventListener('click', async () => {
+  const email = prompt('Email Firebase:');
+  if(!email) return;
+
+  const password = prompt('Mật khẩu:');
+  if(!password) return;
+
+  try{
+    await window.fbCars.signInWithEmailAndPassword(
+      window.firebaseAuth,
+      email,
+      password
+    );
+  }catch(error){
+    alert('Đăng nhập thất bại: ' + error.message);
+  }
+});
+
+document.getElementById('btnLogout').addEventListener('click', async () => {
+  await window.fbCars.signOut(window.firebaseAuth);
+});
+
+async function initFirebase(){
+  while(!window.fbCars || !window.firebaseAuth){
+    await new Promise(resolve => setTimeout(resolve, 50));
+  }
+
+  window.fbCars.onAuthStateChanged(window.firebaseAuth, user => {
+    const login = document.getElementById('btnLogin');
+    const logout = document.getElementById('btnLogout');
+
+    if(login) login.style.display = user ? 'none' : 'inline-flex';
+    if(logout) logout.style.display = user ? 'inline-flex' : 'none';
+  });
+
+  loadCars();
+}
+
+initFirebase();
 /* ---------- Sự kiện ---------- */
 document.getElementById('btnAdd').addEventListener('click', () => {
   editingCarId = null;
@@ -961,8 +1045,13 @@ dropzone.addEventListener('drop', e => {
 });
 
 // Submit form
-carForm.addEventListener('submit', e => {
+carForm.addEventListener('submit', async e => {
   e.preventDefault();
+
+  if(!window.firebaseAuth.currentUser){
+    alert('Bạn cần đăng nhập để thêm hoặc sửa xe.');
+    return;
+  }
 
   const fd = new FormData(carForm);
   const name = (fd.get('name') || '').toString().trim();
@@ -973,20 +1062,18 @@ carForm.addEventListener('submit', e => {
     carForm.querySelector('[name="name"]').focus();
     return;
   }
+
   if(!priceRaw || !Number.isFinite(Number(priceRaw)) || Number(priceRaw) < 0){
     alert('Vui lòng nhập giá bán hợp lệ.');
     carForm.querySelector('[name="price"]').focus();
     return;
   }
 
-    const existingIndex = editingCarId
-    ? cars.findIndex(c => c.id === editingCarId)
-    : -1;
-
-  const oldCar = existingIndex >= 0 ? cars[existingIndex] : null;
+  const oldCar = editingCarId
+    ? cars.find(c => c.id === editingCarId)
+    : null;
 
   const car = {
-    id: oldCar ? oldCar.id : uid(),
     createdAt: oldCar ? oldCar.createdAt : Date.now(),
     name,
     brand: (fd.get('brand') || '').toString().trim(),
@@ -1002,38 +1089,32 @@ carForm.addEventListener('submit', e => {
     image: pendingImage || (oldCar && oldCar.image) || placeholder(name)
   };
 
-  if(existingIndex >= 0){
-    cars[existingIndex] = car;
-  }else{
-    cars.unshift(car);
-  }
-
-  if(!saveCars()){
-    if(existingIndex >= 0){
-      cars[existingIndex] = oldCar;
+  try{
+    if(editingCarId){
+      await window.fbCars.updateDoc(
+        window.fbCars.doc(window.firestoreDb, 'cars', editingCarId),
+        car
+      );
     }else{
-      cars.shift();
+      await window.fbCars.addDoc(
+        window.fbCars.collection(window.firestoreDb, 'cars'),
+        car
+      );
     }
-    return;
+
+    editingCarId = null;
+    closeAllModals();
+    resetForm();
+    document.querySelector('.form-head h2').textContent = 'Thêm xe mới';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }catch(error){
+    console.error(error);
+    alert('Không thể lưu xe: ' + error.message);
   }
-
-  editingCarId = null;
-  closeAllModals();
-  resetForm();
-  document.querySelector('.form-head h2').textContent = 'Thêm xe mới';
-  render();
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 /* ---------- Khởi tạo ---------- */
-loadCars();
-render();
 
-/* Nếu localStorage trống lần đầu → lưu dữ liệu mẫu */
-if(!localStorage.getItem(STORE_KEY)){
-  saveCars();
-}
 
 </script>
 </body>
